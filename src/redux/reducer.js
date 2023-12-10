@@ -3,12 +3,9 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const categorSlice = createSlice({
   name: 'categorARR',
-  initialState: [ 
-    { id: 1, title: 'Category 1' },
-    { id: 2, title: 'Category 2'}],
+  initialState: [],
   reducers: {
-    setCategorArr: (state, action) => {
-        debugger
+    setCategorArr: (state, action) => {        
         return action.payload;
       },
   },

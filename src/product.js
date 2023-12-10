@@ -1,8 +1,8 @@
 
 import React from 'react';
 
-const Product = ({ name ,quanity}) => {
-return <div style={{textAlign:"center"}}>{name}{quanity>1?quanity:''}</div>
+const Product = ({ name ,quantity}) => {
+return <div style={{textAlign:"center"}}>{name} {quantity>1?quantity:''}</div>
 };
 
 export default Product;

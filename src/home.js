@@ -12,27 +12,26 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 
 import { setCategorArr } from './redux/reducer';
-import { getAllCategories } from './axios/catAxios';
+import { getAllCategories, getPoducts, savePoducts } from './axios/api';
 
 
 const Home = () => {
   const [name, setName] = useState('');
   const [categorChoose, setCategorChoose] = useState('');
-  const [allProducts, setAllProducts] = useState([
-    { name: "milk", categor: "Category1", quanity: 1 },
-    { name: "bbb", categor: "Category1", quanity: 1 }
-  ]);
+  const [allProducts, setAllProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
 
-  const categories = [{ id: 1, title: 'Category1' },
-  { id: 2, title: 'Category2' }];
+  // let categories = [{ id: 1, title: 'Category1' },
+  // { id: 2, title: 'Category2' }];
   const dispatch = useDispatch();
 
   useEffect(() => {
-    debugger
-    getAllCategories().then(c =>
+    getAllCategories().then(c => {
+      setCategories(c.data)
       dispatch(setCategorArr(c.data))
-      // console.log(categories)
-    )
+    })
+    getPoducts().then(p => setAllProducts(p.data))
+
   }, []);
 
   // useEffect(() => {
@@ -44,19 +43,20 @@ const Home = () => {
 
     if (index !== -1) {
       setAllProducts(prevProducts => prevProducts.map((product, i) =>
-        i === index ? { ...product, quanity: product.quanity + 1 } : product
+        i === index ? { ...product, quantity: product.quantity + 1 } : product
       ));
     } else {
       setAllProducts(prevProducts => [
         ...prevProducts,
-        { name: name, quanity: 1, categor: categorChoose }
+        { name: name, quantity: 1, categoryId: categories.find(c => c.name == categorChoose)._id }
       ]);
     }
+    savePoducts(name, categorChoose, 1)
   }
 
 
   function calculateSum() {
-    const sum = allProducts?.reduce((total, current) => total + Number(current.quanity), 0);
+    const sum = allProducts?.reduce((total, current) => total + Number(current.quantity), 0);
     return sum;
   }
   const handleChange = (event) => {
@@ -93,8 +93,8 @@ const Home = () => {
               Select category
     </MenuItem>
             {categories?.map((cat, index) => (
-              <MenuItem key={index} value={cat.title}>
-                {cat.title}
+              <MenuItem key={index} value={cat.name}>
+                {cat.name}
               </MenuItem>
             ))}
           </Select>
@@ -104,9 +104,9 @@ const Home = () => {
       </div>
 
 
-      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', color: '#1976D2' }}>
+      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', color: '#1976D2', justifyContent: 'space-around' }}>
         {categories?.map((category, index) => (
-          <Category key={index} title={category.title} products={allProducts.filter(f => f.categor === category.title)} />
+          <Category key={index} title={category.name} products={allProducts.filter(f => f.categoryId === category._id)} />
         ))}
       </div>
 
